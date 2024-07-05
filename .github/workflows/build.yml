@@ -34,26 +34,26 @@ jobs:
          onefile: true
          standalone: true
          nuitka-version: main
-         script-name: tgs_to_gif.py
+         script-name: tgBuffer_to_gif.py
 
     - name: 压缩文件 (Windows)
       if: runner.os == 'Windows'
       run: |
-        Compress-Archive -Path ./build/tgs_to_gif.exe -DestinationPath ./tgs_to_gif-${{ matrix.os }}.zip
+        Compress-Archive -Path ./build/tgBuffer_to_gif.exe -DestinationPath ./tgBuffer_to_gif-${{ matrix.os }}.zip
       shell: pwsh
 
     - name: 压缩文件 (macOS/Linux)
       if: runner.os != 'Windows'
       run: |
-        zip -r ./tgs_to_gif-${{ matrix.os }}.zip ./build/tgs_to_gif.bin
+        zip -r ./tgBuffer_to_gif-${{ matrix.os }}.zip ./build/tgBuffer_to_gif.bin
 
     - name: 上传工件
       uses: actions/upload-artifact@v3
       with:
-        name: tgs_to_gif-${{ matrix.os }}
-        path: tgs_to_gif-${{ matrix.os }}.zip
+        name: tgBuffer_to_gif-${{ matrix.os }}
+        path: tgBuffer_to_gif-${{ matrix.os }}.zip
 
     -   name: 向 Release 上传工件
         uses: softprops/action-gh-release@v2
         with:
-          files: tgs_to_gif-${{ matrix.os }}.zip
+          files: tgBuffer_to_gif-${{ matrix.os }}.zip
