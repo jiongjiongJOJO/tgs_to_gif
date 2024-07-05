@@ -1,0 +1,2 @@
+rlottie-python~=1.3.6
+Pillow~=10.4.0
