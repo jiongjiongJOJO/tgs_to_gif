@@ -1,0 +1,59 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-12, windows-latest]
+
+    steps:
+    - name: 签出代码
+      uses: actions/checkout@v4
+
+    - name: 配置Python环境
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+
+    - name: 安装Python依赖包
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: 打包Python程序
+      uses: Nuitka/Nuitka-Action@main
+      with:
+         onefile: true
+         standalone: true
+         nuitka-version: main
+         script-name: tgs_to_gif.py
+
+    - name: 压缩文件 (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        Compress-Archive -Path ./build/tgs_to_gif.exe -DestinationPath ./tgs_to_gif-${{ matrix.os }}.zip
+      shell: pwsh
+
+    - name: 压缩文件 (macOS/Linux)
+      if: runner.os != 'Windows'
+      run: |
+        zip -r ./tgs_to_gif-${{ matrix.os }}.zip ./build/tgs_to_gif.bin
+
+    - name: 上传工件
+      uses: actions/upload-artifact@v3
+      with:
+        name: tgs_to_gif-${{ matrix.os }}
+        path: tgs_to_gif-${{ matrix.os }}.zip
+
+    -   name: 向 Release 上传工件
+        uses: softprops/action-gh-release@v2
+        with:
+          files: tgs_to_gif-${{ matrix.os }}.zip
