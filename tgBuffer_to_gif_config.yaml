@@ -1,0 +1,4 @@
+Debug:
+  enable: True
+  log_path: "~/tgs_to_gif.log"
+  hook_json_path: "~/file_273.json"
